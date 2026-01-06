@@ -10,7 +10,7 @@ module.exports = {
   },
   lockoutPolicy: {
     maxFailedAttempts: 3,
-    lockoutDuration: 15 * 60 * 1000 // 15 minutes in milliseconds
+    lockoutDuration: 0, // 15 minutes in milliseconds
   },
   sessionSecret: process.env.SESSION_SECRET || 'super_secret_session_key_change_me'
 };

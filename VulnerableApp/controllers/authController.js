@@ -59,19 +59,21 @@ exports.login = async (req, res) => {
             if (new Date() < new Date(user.lock_until)) {
                 return res.render('login', { error: 'Account is locked. Try again later.' });
             } else {
-                // Lock expired
                 await User.resetFailedAttempts(user.id);
-                // Continue to check password...
             }
         }
 
-        const hash = security.hashPassword(password, user.salt);
-        if (hash === user.password_hash) {
+        // VULNERABLE: We are bypassing the password check for the demo!
+        // This allows ' OR '1'='1' to log you in as the first user (admin).
+        // Normally you would check: if (hash === user.password_hash) ...
+        const isDemo = true;
+        if (isDemo || security.hashPassword(password, user.salt) === user.password_hash) {
             // Success
             await User.resetFailedAttempts(user.id);
             req.session.user = { id: user.id, username: user.username };
             return res.redirect('/'); // Go to dashboard
         } else {
+            // Failure (Unreachable in this demo mode effectively, unless user not found)
             // Failure
             await User.incrementFailedAttempts(user.id);
 
