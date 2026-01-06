@@ -1,0 +1,64 @@
+<%- include('partials/header') %>
+
+<div class="bg-white p-8 rounded shadow-md mt-10">
+    <h1 class="text-3xl font-bold mb-4">Database Inspector</h1>
+    <p class="mb-6 text-gray-600">This page allows you to verify the data stored in the database, including password hashes.</p>
+
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-2 text-blue-800">Users Table</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100 text-left">
+                        <th class="border p-2">ID</th>
+                        <th class="border p-2">Username</th>
+                        <th class="border p-2">Email</th>
+                        <th class="border p-2">Password Hash (SHA-512)</th>
+                        <th class="border p-2">Salt</th>
+                        <th class="border p-2">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr class="hover:bg-gray-50">
+                            <td class="border p-2"><%= user.id %></td>
+                            <td class="border p-2 font-bold"><%= user.username %></td>
+                            <td class="border p-2"><%= user.email %></td>
+                            <td class="border p-2 font-mono text-xs break-all w-64"><%= user.password_hash %></td>
+                            <td class="border p-2 font-mono text-xs break-all w-32"><%= user.salt %></td>
+                            <td class="border p-2">
+                                <% if (user.is_locked) { %>
+                                    <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">Locked</span>
+                                <% } else { %>
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">Active</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="text-2xl font-bold mb-2 text-blue-800">Clients Table (XSS Demo)</h2>
+        <table class="w-full bg-white border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100 text-left">
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Client Name (Stored Raw)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% clients.forEach(client => { %>
+                    <tr class="hover:bg-gray-50">
+                        <td class="border p-2"><%= client.id %></td>
+                        <td class="border p-2 font-mono text-sm"><%= client.name %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

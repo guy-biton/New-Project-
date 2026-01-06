@@ -1,11 +1,11 @@
 // config/config.js
 module.exports = {
   passwordPolicy: {
-    minLength: 10,
-    requireUppercase: true,
-    requireLowercase: true,
-    requireDigits: true,
-    requireSpecialChars: true, // e.g., !@#$%^&*
+    minLength: 5,
+    requireUppercase: false,
+    requireLowercase: false,
+    requireDigits: false,
+    requireSpecialChars: false, // e.g., !@#$%^&*
     historyCheck: 3 // Cannot reuse last 3 passwords
   },
   lockoutPolicy: {
