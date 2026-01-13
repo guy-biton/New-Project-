@@ -1,0 +1,74 @@
+<%- include('partials/header') %>
+
+<div class="max-w-4xl mx-auto bg-white p-8 rounded shadow-md mt-10">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Clients Management
+            <span class="bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded border border-green-400">SECURE MODE</span>
+        </h1>
+        <a href="/" class="text-blue-600 hover:underline">Back to Dashboard</a>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <!-- Secure Search Form -->
+    <div class="bg-gray-50 p-4 rounded mb-8 border">
+        <h3 class="text-xl font-bold mb-2">Search Clients</h3>
+        <p class="text-sm text-gray-500 mb-4"><em>Protected against SQL Injection using Parameterized Queries.</em></p>
+        <form action="/clients" method="GET" class="flex gap-2">
+            <input type="text" name="search" placeholder="Search by name..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+                class="flex-grow px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">Search</button>
+            <% if (typeof searchQuery !== 'undefined' && searchQuery) { %>
+                <a href="/clients" class="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-400 transition flex items-center">Clear</a>
+            <% } %>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Add Client Form -->
+        <div>
+            <h3 class="text-xl font-bold mb-4">Add New Client</h3>
+            <form action="/clients/add" method="POST" class="bg-gray-50 p-4 rounded border">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Client Name</label>
+                    <input type="text" name="name" placeholder="Enter Client Name" required
+                        class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 transition">Add Client</button>
+            </form>
+        </div>
+
+        <!-- Client List -->
+        <div>
+            <h3 class="text-xl font-bold mb-2">Client List</h3>
+            <p class="text-sm text-gray-500 mb-4"><em>Protected against Stored XSS using Output Encoding (<code>&lt;%= %&gt;</code>).</em></p>
+
+            <div class="bg-white border rounded h-96 overflow-y-auto">
+                <% if (clients.length === 0) { %>
+                    <p class="p-4 text-gray-500 text-center">No clients found.</p>
+                <% } else { %>
+                    <ul class="divide-y divide-gray-200">
+                        <% clients.forEach(client => { %>
+                            <li class="p-4 hover:bg-gray-50">
+                                <div class="font-bold text-gray-800">
+                                    <!-- SECURE: Using <%= %> escapes HTML entities -->
+                                    <%= client.name %>
+                                </div>
+                                <div class="text-xs text-gray-500 flex justify-between mt-1">
+                                    <span>ID: <%= client.id %></span>
+                                    <span><%= new Date(client.created_at).toLocaleDateString() %> <%= new Date(client.created_at).toLocaleTimeString() %></span>
+                                </div>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

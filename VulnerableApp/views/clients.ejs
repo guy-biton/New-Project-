@@ -1,0 +1,57 @@
+<%- include('partials/header') %>
+
+<div class="bg-white p-8 rounded shadow-md mt-10">
+    <h1 class="text-3xl font-bold mb-4 text-red-600">Vulnerable Client System</h1>
+    <p class="mb-4">This page demonstrates <strong>SQL Injection (Search)</strong> and <strong>Stored XSS (Add/Display)</strong>.</p>
+
+    <!-- Error/Success Messages -->
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline"><%= error %></span>
+        </div>
+    <% } %>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- SEARCH CLIENT (SQL Injection) -->
+        <div class="border p-4 rounded bg-yellow-50">
+            <h3 class="text-xl font-bold mb-2">Search Clients (SQLi)</h3>
+            <p class="text-sm text-gray-600 mb-2">Try: <code>' OR '1'='1</code> to see all.</p>
+            <form action="/clients" method="GET">
+                <input type="text" name="search" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>" placeholder="Search by Name..." class="w-full px-3 py-2 border rounded mb-2">
+                <button type="submit" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Search</button>
+            </form>
+        </div>
+
+        <!-- ADD CLIENT (Stored XSS) -->
+        <div class="border p-4 rounded bg-purple-50">
+            <h3 class="text-xl font-bold mb-2">Add Client (XSS)</h3>
+            <p class="text-sm text-gray-600 mb-2">Try: <code>&lt;script&gt;alert(1)&lt;/script&gt;</code></p>
+            <form action="/clients/add" method="POST">
+                <input type="text" name="name" placeholder="Client Name" class="w-full px-3 py-2 border rounded mb-2" required>
+                <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Add Client</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- RESULTS LIST -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-2">Client List</h2>
+        <div class="bg-white border border-gray-300 rounded shadow-inner p-4 h-96 overflow-y-auto">
+            <% if (clients.length === 0) { %>
+                <p class="text-gray-500">No clients found.</p>
+            <% } else { %>
+                <ul class="divide-y divide-gray-200">
+                    <% clients.forEach(client => { %>
+                        <li class="py-2">
+                            <span class="font-bold text-gray-700">ID <%= client.id %>:</span>
+                            <!-- VULNERABLE XSS RENDERING -->
+                            <span class="ml-2"><%- client.name %></span>
+                        </li>
+                    <% }) %>
+                </ul>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

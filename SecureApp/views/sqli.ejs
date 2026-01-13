@@ -1,0 +1,64 @@
+<%- include('partials/header') %>
+
+<div class="bg-white p-8 rounded shadow-md mt-10">
+    <h1 class="text-3xl font-bold mb-4">SQL Injection Demo</h1>
+    <p class="mb-4">Try inputs like <code>' OR '1'='1</code> to bypass login/search logic.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Vulnerable Form -->
+        <div class="border border-red-300 bg-red-50 p-4 rounded">
+            <h3 class="text-xl font-bold mb-2 text-red-600">Vulnerable Search</h3>
+            <p class="text-sm text-gray-600 mb-2">Uses string concatenation.</p>
+            <form action="/demo/sqli/vulnerable" method="POST">
+                <input type="text" name="searchQuery" placeholder="Search Username..." class="w-full px-3 py-2 border rounded mb-2">
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Search (Vulnerable)</button>
+            </form>
+        </div>
+
+        <!-- Secure Form -->
+        <div class="border border-green-300 bg-green-50 p-4 rounded">
+            <h3 class="text-xl font-bold mb-2 text-green-600">Secure Search</h3>
+            <p class="text-sm text-gray-600 mb-2">Uses parameterized queries.</p>
+            <form action="/demo/sqli/secure" method="POST">
+                <input type="text" name="searchQuery" placeholder="Search Username..." class="w-full px-3 py-2 border rounded mb-2">
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Search (Secure)</button>
+            </form>
+        </div>
+    </div>
+
+    <% if (mode) { %>
+        <div class="mt-8 border-t pt-4">
+            <h3 class="text-xl font-bold mb-2">Results (<%= mode %>)</h3>
+            <% if (query) { %>
+                <p class="font-mono bg-gray-200 p-2 rounded mb-4 text-sm">Query Executed: <%= query %></p>
+            <% } %>
+
+            <% if (error) { %>
+                <div class="text-red-600"><%= error %></div>
+            <% } else if (results && results.length > 0) { %>
+                <table class="w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 p-2">ID</th>
+                            <th class="border border-gray-300 p-2">Username</th>
+                            <th class="border border-gray-300 p-2">Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% results.forEach(user => { %>
+                            <tr>
+                                <td class="border border-gray-300 p-2"><%= user.id %></td>
+                                <td class="border border-gray-300 p-2"><%= user.username %></td>
+                                <td class="border border-gray-300 p-2"><%= user.email %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                 <p>No results found.</p>
+            <% } %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

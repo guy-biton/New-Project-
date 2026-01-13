@@ -1,0 +1,53 @@
+<%- include('partials/header') %>
+
+<div class="bg-white p-8 rounded shadow-md mt-10">
+    <h1 class="text-3xl font-bold mb-4">Stored XSS Demo</h1>
+    <p class="mb-4">Add a client with a name like <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code> or <code>&lt;img src=x onerror=alert(1)&gt;</code>.</p>
+
+    <!-- Add Client Form -->
+    <div class="mb-8 border p-4 rounded bg-gray-50">
+        <h3 class="text-xl font-bold mb-2">Add New Client</h3>
+        <form action="/demo/xss/add" method="POST">
+            <input type="text" name="name" placeholder="Client Name (Try XSS here)" class="w-full px-3 py-2 border rounded mb-2" required>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Add Client</button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Vulnerable Display -->
+        <div class="border border-red-300 bg-red-50 p-4 rounded">
+            <h3 class="text-xl font-bold mb-2 text-red-600">Vulnerable Display</h3>
+            <p class="text-sm text-gray-600 mb-2">Renders using <code>&lt;%- client.name %&gt;</code> (Unescaped).</p>
+            <div class="bg-white p-2 border rounded h-64 overflow-y-auto">
+                <ul class="list-disc pl-5">
+                    <% clients.forEach(client => { %>
+                        <li class="mb-1">
+                            <span class="font-bold">ID <%= client.id %>:</span>
+                            <!-- VULNERABLE LINE -->
+                            <%- client.name %>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Secure Display -->
+        <div class="border border-green-300 bg-green-50 p-4 rounded">
+            <h3 class="text-xl font-bold mb-2 text-green-600">Secure Display</h3>
+            <p class="text-sm text-gray-600 mb-2">Renders using <code>&lt;%= client.name %&gt;</code> (Escaped).</p>
+            <div class="bg-white p-2 border rounded h-64 overflow-y-auto">
+                <ul class="list-disc pl-5">
+                    <% clients.forEach(client => { %>
+                        <li class="mb-1">
+                            <span class="font-bold">ID <%= client.id %>:</span>
+                            <!-- SECURE LINE -->
+                            <%= client.name %>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

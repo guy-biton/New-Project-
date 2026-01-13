@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+
+<div class="bg-white p-8 rounded shadow-md mt-10">
+    <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+    <p class="mb-6">Welcome to the secure area, <%= user.username %>!</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="border p-4 rounded hover:shadow-lg transition">
+            <h3 class="text-xl font-bold mb-2 text-red-600">Vulnerable Actions</h3>
+            <ul class="list-disc pl-5">
+                <li><a href="/clients" class="text-blue-600 hover:underline">Manage Clients (SQLi & XSS)</a></li>
+            </ul>
+        </div>
+
+        <div class="border p-4 rounded hover:shadow-lg transition">
+            <h3 class="text-xl font-bold mb-2 text-green-600">Account Management</h3>
+            <ul class="list-disc pl-5">
+                <li><a href="/auth/change-password" class="text-blue-600 hover:underline">Change Password</a></li>
+                <li class="mt-2 text-sm text-gray-500 font-bold uppercase tracking-wider">Admin / Verificaton</li>
+                <li><a href="/inspector" class="text-purple-600 hover:underline font-bold">Database Inspector (View Users)</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
